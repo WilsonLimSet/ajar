@@ -1,0 +1,35 @@
+{
+  "name": "ajar",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "bun run --bun next dev",
+    "build": "bun run --bun next build",
+    "start": "bun run --bun next start",
+    "lint": "bun run --bun next lint"
+  },
+  "dependencies": {
+    "@vercel/analytics": "^1.5.0",
+    "lucide-react": "^0.511.0",
+    "next": "15.1.7",
+    "next-pwa": "^5.6.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-swipeable": "^7.0.2",
+    "react-window": "^1.8.11",
+    "uuid": "^9.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.17.19",
+    "@types/react": "^19.0.10",
+    "@types/react-dom": "^19.0.4",
+    "@types/react-window": "^1.8.8",
+    "@types/uuid": "^9.0.8",
+    "eslint": "^9.21.0",
+    "eslint-config-next": "15.1.7",
+    "ignore-loader": "^0.1.2",
+    "postcss": "^8.5.3",
+    "tailwindcss": "^3.4.17",
+    "typescript": "^5.7.3"
+  }
+}
