@@ -88,8 +88,12 @@ export default function ManagePage() {
 
   const loadData = () => {
     const loadedFlashcards = getFlashcards();
+    // Sort flashcards by createdAt in descending order (newest first)
+    const sortedFlashcards = [...loadedFlashcards].sort((a, b) => {
+      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+    });
     const loadedCategories = getCategories();
-    setFlashcards(loadedFlashcards);
+    setFlashcards(sortedFlashcards);
     setCategories(loadedCategories);
   };
 
@@ -253,6 +257,49 @@ export default function ManagePage() {
   // Calculate paginated flashcards
   const paginatedFlashcards = filteredFlashcards.slice((page - 1) * cardsPerPage, page * cardsPerPage);
   const totalPages = Math.ceil(filteredFlashcards.length / cardsPerPage);
+
+  // Generate page numbers for pagination
+  const getPageNumbers = () => {
+    const pageNumbers = [];
+    
+    // Always show first page
+    pageNumbers.push(1);
+    
+    // Calculate the range of pages to show around current page
+    let start = Math.max(2, page - 1);
+    let end = Math.min(totalPages - 1, page + 1);
+    
+    // Adjust start and end to always show 3 pages when possible
+    if (end - start < 2) {
+      if (start === 2) {
+        end = Math.min(totalPages - 1, start + 2);
+      } else if (end === totalPages - 1) {
+        start = Math.max(2, end - 2);
+      }
+    }
+    
+    // Add ellipsis if needed before current page range
+    if (start > 2) {
+      pageNumbers.push('...');
+    }
+    
+    // Add middle pages
+    for (let i = start; i <= end; i++) {
+      pageNumbers.push(i);
+    }
+    
+    // Add ellipsis if needed before last page
+    if (end < totalPages - 1) {
+      pageNumbers.push('...');
+    }
+    
+    // Always show last page if there is more than one page
+    if (totalPages > 1) {
+      pageNumbers.push(totalPages);
+    }
+    
+    return pageNumbers;
+  };
 
   console.log('[ManagePage] render, editValues:', editValues);
 
@@ -727,19 +774,51 @@ export default function ManagePage() {
       {totalPages > 1 && (
         <div className="flex justify-center items-center gap-2 mt-6">
           <button
+            onClick={() => setPage(1)}
+            disabled={page === 1}
+            className="px-3 py-1 rounded bg-gray-200 text-gray-700 disabled:opacity-50"
+          >
+            First
+          </button>
+          <button
             onClick={() => setPage(page - 1)}
             disabled={page === 1}
             className="px-3 py-1 rounded bg-gray-200 text-gray-700 disabled:opacity-50"
           >
             Prev
           </button>
-          <span className="text-sm text-gray-700">Page {page} of {totalPages}</span>
+          <div className="flex gap-1">
+            {getPageNumbers().map((pageNum, index) => (
+              pageNum === '...' ? (
+                <span key={`ellipsis-${index}`} className="px-2 py-1">...</span>
+              ) : (
+                <button
+                  key={pageNum}
+                  onClick={() => setPage(Number(pageNum))}
+                  className={`px-3 py-1 rounded ${
+                    page === pageNum
+                      ? 'bg-blue-600 text-white'
+                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                  }`}
+                >
+                  {pageNum}
+                </button>
+              )
+            ))}
+          </div>
           <button
             onClick={() => setPage(page + 1)}
             disabled={page === totalPages}
             className="px-3 py-1 rounded bg-gray-200 text-gray-700 disabled:opacity-50"
           >
             Next
+          </button>
+          <button
+            onClick={() => setPage(totalPages)}
+            disabled={page === totalPages}
+            className="px-3 py-1 rounded bg-gray-200 text-gray-700 disabled:opacity-50"
+          >
+            Last
           </button>
         </div>
       )}
