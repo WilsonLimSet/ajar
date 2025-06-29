@@ -9,6 +9,7 @@ import {
   addCategory,
   updateCategory,
   deleteCategory,
+  downloadDataAsJSON,
 } from "@/utils/localStorage";
 import { Flashcard, Category } from "@/types";
 
@@ -319,9 +320,14 @@ export default function ManagePage() {
         </div>
       </div>
 
-      {/* Manage Categories Button */}
+      {/* Manage Categories Button and Export Button */}
       <div className="flex justify-between items-center mb-2">
-        <div></div>
+        <button
+          className="px-3 py-1 rounded bg-green-500 text-white hover:bg-green-600 text-sm font-medium"
+          onClick={() => downloadDataAsJSON()}
+        >
+          Export Data
+        </button>
         <button
           className="px-3 py-1 rounded bg-gray-200 text-black hover:bg-gray-300 text-sm font-medium"
           onClick={() => setShowManageCategories(true)}

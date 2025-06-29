@@ -516,4 +516,51 @@ export function updateSpeakingReview(card: Flashcard, success: boolean): void {
   // Update the flashcard in storage
   cards[cardIndex] = card;
   saveFlashcards(cards);
+}
+
+/**
+ * Exports all flashcards and categories as a JSON object
+ * @returns Object containing all flashcards and categories
+ */
+export function exportAllData(): { flashcards: Flashcard[], categories: Category[] } {
+  const flashcards = getFlashcards();
+  const categories = getCategories();
+  
+  return {
+    flashcards,
+    categories
+  };
+}
+
+/**
+ * Downloads all flashcards and categories as a JSON file
+ * @param filename Optional filename (defaults to 'flashcards_export_YYYY-MM-DD.json')
+ */
+export function downloadDataAsJSON(filename?: string): void {
+  const data = exportAllData();
+  const jsonString = JSON.stringify(data, null, 2);
+  
+  // Create a blob from the JSON string
+  const blob = new Blob([jsonString], { type: 'application/json' });
+  
+  // Create a download link
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  
+  // Set filename with current date if not provided
+  if (!filename) {
+    const date = new Date().toISOString().split('T')[0];
+    filename = `flashcards_export_${date}.json`;
+  }
+  
+  link.href = url;
+  link.download = filename;
+  
+  // Trigger download
+  document.body.appendChild(link);
+  link.click();
+  
+  // Cleanup
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
 } 
